@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PocketCqrs;
+using Serilog;
 
 namespace Ting
 {
@@ -23,6 +26,8 @@ namespace Ting
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddHandlers(typeof(Startup).Assembly);
+            services.AddSingleton<IMessaging, Messaging>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,7 +43,7 @@ namespace Ting
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 // app.UseHsts();
             }
-
+            app.UseSerilogRequestLogging();
             // app.UsePathBase("/ting");
             // app.UseHttpsRedirection();
             app.UseStaticFiles();

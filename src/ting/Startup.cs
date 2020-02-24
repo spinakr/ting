@@ -39,6 +39,7 @@ namespace Ting
                 // app.UseHsts();
             }
 
+            // app.UsePathBase("/ting");
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -61,7 +61,7 @@ namespace Ting.Pages
         public Result Handle(AddNewItemCommand cmd)
         {
             var filePostfix = cmd.ImageFile.FileName.Split('.').Last();
-            var fileStorageLocation = _configuration.GetValue<string>("FILE_BASE_PATH") ?? $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/{"tingImages"}";
+            var fileStorageLocation = $"{_configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/{"images"}";
             var file = Path.Combine(fileStorageLocation, $"{cmd.ItemName}.{filePostfix}");
             _logger.LogInformation($"Storing file to locaiton {file}");
             using (var fileStream = new FileStream(file, FileMode.Create))

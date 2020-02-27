@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PocketCqrs;
+using PocketCqrs.EventStore;
 using Serilog;
 
 namespace Ting
@@ -28,6 +29,9 @@ namespace Ting
             services.AddRazorPages();
             services.AddHandlers(typeof(Startup).Assembly);
             services.AddSingleton<IMessaging, Messaging>();
+            services.AddSingleton<IEventStore, EventStore>();
+            var fileStorageLocation = $"{Configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ting";
+            services.AddSingleton<IAppendOnlyStore>(new FileAppendOnlyStore("ting", fileStorageLocation));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

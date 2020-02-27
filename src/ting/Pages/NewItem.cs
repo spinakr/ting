@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PocketCqrs;
+using PocketCqrs.EventStore;
+using ting.Domain;
 
 namespace Ting.Pages
 {
@@ -49,10 +51,12 @@ namespace Ting.Pages
     public class AddNewItemCommandHandler : ICommandHandler<AddNewItemCommand>
     {
         private readonly IConfiguration _configuration;
+        private readonly IEventStore _evnetStore;
         private readonly ILogger<AddNewItemCommandHandler> _logger;
 
-        public AddNewItemCommandHandler(IConfiguration configuration, ILogger<AddNewItemCommandHandler> logger)
+        public AddNewItemCommandHandler(IConfiguration configuration, IEventStore eventStore, ILogger<AddNewItemCommandHandler> logger)
         {
+            _evnetStore = eventStore;
             _configuration = configuration;
             _logger = logger;
         }
@@ -60,16 +64,27 @@ namespace Ting.Pages
 
         public Result Handle(AddNewItemCommand cmd)
         {
+            string fileNameWithLocation = SaveFileToDisk(cmd);
+
+            var newItem = Item.NewItem(cmd.ItemName);
+            _evnetStore.AppendToStream(newItem.Id, newItem.PendingEvents, 0);
+
+            return Result.Complete();
+        }
+
+        private string SaveFileToDisk(AddNewItemCommand cmd)
+        {
             var filePostfix = cmd.ImageFile.FileName.Split('.').Last();
-            var fileStorageLocation = $"{_configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/{"images"}";
-            var file = Path.Combine(fileStorageLocation, $"{cmd.ItemName}.{filePostfix}");
-            _logger.LogInformation($"Storing file to locaiton {file}");
-            using (var fileStream = new FileStream(file, FileMode.Create))
+            var fileStorageLocation = $"{_configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ting/images";
+            Directory.CreateDirectory(fileStorageLocation);
+            var fileNameWithLocation = Path.Combine(fileStorageLocation, $"{cmd.ItemName}.{filePostfix}");
+            _logger.LogInformation($"Storing file to locaiton {fileNameWithLocation}");
+            using (var fileStream = new FileStream(fileNameWithLocation, FileMode.Create))
             {
                 cmd.ImageFile.CopyToAsync(fileStream).GetAwaiter().GetResult();
             }
 
-            return Result.Complete(file);
+            return fileNameWithLocation;
         }
     }
 }

@@ -32,13 +32,14 @@ namespace Ting.Pages
         {
         }
 
-        public async Task OnPostAsync()
+        public async Task<RedirectToPageResult> OnPostAsync()
         {
             _messaging.Dispatch(new AddNewItemCommand
             {
                 ImageFile = Upload,
                 ItemName = Name
             });
+            return RedirectToPage("NewItem");
         }
     }
 
@@ -64,11 +65,14 @@ namespace Ting.Pages
 
         public Result Handle(AddNewItemCommand cmd)
         {
-            string fileNameWithLocation = SaveFileToDisk(cmd);
+            var fileName = string.Empty;
+            if (cmd.ImageFile is object) fileName = SaveFileToDisk(cmd);
 
-            var newItem = Item.NewItem(cmd.ItemName);
-            _evnetStore.AppendToStream(newItem.Id, newItem.PendingEvents, 0);
+            var eventStream = _evnetStore.LoadEventStream("items");
+            var inventory = new Inventory(eventStream.Events);
+            inventory.AddNewItem(cmd.ItemName, $"images/{fileName}");
 
+            _evnetStore.AppendToStream("items", inventory.PendingEvents, eventStream.Version);
             return Result.Complete();
         }
 
@@ -77,14 +81,15 @@ namespace Ting.Pages
             var filePostfix = cmd.ImageFile.FileName.Split('.').Last();
             var fileStorageLocation = $"{_configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ting/images";
             Directory.CreateDirectory(fileStorageLocation);
-            var fileNameWithLocation = Path.Combine(fileStorageLocation, $"{cmd.ItemName}.{filePostfix}");
+            var fileName = $"{cmd.ItemName}.{filePostfix}";
+            var fileNameWithLocation = Path.Combine(fileStorageLocation, fileName);
             _logger.LogInformation($"Storing file to locaiton {fileNameWithLocation}");
             using (var fileStream = new FileStream(fileNameWithLocation, FileMode.Create))
             {
                 cmd.ImageFile.CopyToAsync(fileStream).GetAwaiter().GetResult();
             }
 
-            return fileNameWithLocation;
+            return fileName;
         }
     }
 }

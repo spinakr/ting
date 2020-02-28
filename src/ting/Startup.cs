@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using PocketCqrs;
 using PocketCqrs.EventStore;
@@ -51,6 +54,12 @@ namespace Ting
             // app.UsePathBase("/ting");
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
+            var fileStorageLocation = $"{Configuration.GetValue<string>("FILE_BASE_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ting";
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(fileStorageLocation, @"images")),
+                RequestPath = new PathString("/images")
+            });
 
             app.UseRouting();
 

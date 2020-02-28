@@ -1,0 +1,18 @@
+﻿@page
+@model AllItems
+@{
+    ViewData["Title"] = "Ting";
+}
+
+<div>
+    <div class="image-container">
+        @foreach (var ting in Model.Items)
+        {
+            <div>
+                <span>@ting.Name</span>
+                <img src="@ting.ImageFilename" class="small-image"/>
+            </div>
+        }
+
+    </div>
+</div>

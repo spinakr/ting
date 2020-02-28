@@ -4,40 +4,56 @@ using PocketCqrs;
 
 namespace ting.Domain
 {
-    public class Item : EventSourcedAggregate
+    public class Inventory : EventSourcedAggregate
     {
-        public Item() { }
-
-        public Item(IEnumerable<IEvent> events) : base(events) { }
-
-        public string Name { get; set; }
-        public string Location { get; set; }
-
-        public static Item NewItem(string name)
+        public Inventory(IEnumerable<IEvent> events) : base(events)
         {
-            var @event = new NewItemWasCreated(Guid.NewGuid().ToString(), name);
-            var newAccount = new Item();
-            newAccount.Append(@event);
-            return newAccount;
+        }
+
+        public IList<Item> Items { get; set; }
+
+        public void AddNewItem(string name, string fileName)
+        {
+            var @event = new NewItemWasCreated(Guid.NewGuid(), name, fileName);
+            Append(@event);
         }
 
         public void When(NewItemWasCreated e)
         {
-            Id = e.ItemId;
-            Name = e.Name;
-            Location = string.Empty;
+            if (Items is null) Items = new List<Item>();
+            Items.Add(new Item { ItemId = e.ItemId, Name = e.Name, ImageFilename = e.ImageFilename, Location = string.Empty });
+        }
+    }
+
+    public class Item
+    {
+        public Guid ItemId { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
+        public string ImageFilename { get; set; }
+
+    }
+    public class InventoryWasInitialized : IEvent
+    {
+        public string InventoryId { get; set; }
+
+        public InventoryWasInitialized(string id)
+        {
+            InventoryId = id;
         }
     }
 
     public class NewItemWasCreated : IEvent
     {
-        public string ItemId { get; set; }
+        public Guid ItemId { get; set; }
         public string Name { get; set; }
+        public string ImageFilename { get; set; }
 
-        public NewItemWasCreated(string id, string name)
+        public NewItemWasCreated(Guid id, string name, string imageUri)
         {
             ItemId = id;
             Name = name;
+            ImageFilename = imageUri;
         }
     }
 }

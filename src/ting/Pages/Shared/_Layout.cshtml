@@ -1,27 +1,23 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Ting</title>
     <link rel="stylesheet" href="css/site.css" />
-</head>
-<body>
-    <header>
-        <nav>
-            <div>
-                <a href="ItemList">Ting</a>
-                <a href="NewItem")>Ny ting</a>
-            </div>
-        </nav>
-    </header>
-    <div>
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>
-    
+  </head>
+  <body>
+    <header></header>
+    <nav>
+      <a href="ItemList">Ting</a>
+      <a href="NewItem" )>Ny ting</a>
+      <hr />
+    </nav>
+    <main role="main">
+      @RenderBody()
+    </main>
+
     <script src="js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
-</body>
+  </body>
 </html>

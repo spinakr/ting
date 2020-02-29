@@ -1,15 +1,13 @@
-﻿@page
-@model NewItem
-@{
-    ViewData["Title"] = "Ting";
-}
+﻿@page 
+@model NewItem 
+@{ ViewData["Title"] = "Ting"; }
 
-<div class="text-center">
-    <h1>Welcome</h1>
-
-    <form method="post" enctype="multipart/form-data">
-    <input type="file" accept="image/*" asp-for="Upload" />
-    <input type="text" asp-for="Name" />
-    <input type="submit" />
-</form>
+<div>
+  <form method="post" enctype="multipart/form-data">
+    <label for="name">Navn</label>
+    <input id="name" type="text" asp-for="Name" />
+    <label for="image">Bilde</label>
+    <input id="image" type="file" accept="image/*" asp-for="Upload" />
+    <input type="submit" value="Lagre"/>
+  </form>
 </div>

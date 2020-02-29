@@ -1,5 +1,5 @@
 ﻿@page
-@model AllItems
+@model ItemList
 @{
     ViewData["Title"] = "Ting";
 }
@@ -10,7 +10,7 @@
         {
             <div>
                 <span>@ting.Name</span>
-                <img src="@ting.ImageFilename" class="small-image"/>
+                @* <img src="@ting.ImageFilename" class="small-image"/> *@
             </div>
         }
 

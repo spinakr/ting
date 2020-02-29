@@ -15,12 +15,12 @@ using ting.Domain;
 namespace Ting.Pages
 {
     [BindProperties]
-    public class AllItems : PageModel
+    public class ItemList : PageModel
     {
-        private readonly ILogger<AllItems> _logger;
+        private readonly ILogger<ItemList> _logger;
         private readonly IMessaging _messaging;
 
-        public AllItems(IMessaging messaging, ILogger<AllItems> logger)
+        public ItemList(IMessaging messaging, ILogger<ItemList> logger)
         {
             _logger = logger;
             _messaging = messaging;

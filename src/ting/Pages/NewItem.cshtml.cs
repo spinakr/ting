@@ -65,12 +65,12 @@ namespace Ting.Pages
 
         public Result Handle(AddNewItemCommand cmd)
         {
-            var fileName = string.Empty;
+            string fileName = null;
             if (cmd.ImageFile is object) fileName = SaveFileToDisk(cmd);
 
             var eventStream = _evnetStore.LoadEventStream("items");
             var inventory = new Inventory(eventStream.Events);
-            inventory.AddNewItem(cmd.ItemName, $"images/{fileName}");
+            inventory.AddNewItem(cmd.ItemName, fileName is null ? "" : $"images/{fileName}");
 
             _evnetStore.AppendToStream("items", inventory.PendingEvents, eventStream.Version);
             return Result.Complete();

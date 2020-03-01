@@ -7,11 +7,10 @@
 <div class="item-list">
         @foreach (var item in Model.Items)
         {
-            <a href="/items/@item.ItemId">
-                <div class="item-listing">
-                    <span>@item.Name</span>
-                    @* <img src="@ting.ImageFilename" class="small-image"/> *@
-                </div>
-            </a>
+            <div class="item-listing">
+                <a href="/items/@item.ItemId">
+                        <span>@item.Name</span>
+                </a>
+            </div>
         }
 </div>

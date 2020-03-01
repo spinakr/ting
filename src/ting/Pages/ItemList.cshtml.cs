@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
@@ -51,6 +52,11 @@ namespace Ting.Pages
         {
             var eventStream = _evnetStore.LoadEventStream("items");
             var inventory = new Inventory(eventStream.Events);
+            if (inventory.Items is null)
+            {
+                inventory.Init();
+                _evnetStore.AppendToStream("items", inventory.PendingEvents, eventStream.Version);
+            }
 
             return inventory.Items;
         }

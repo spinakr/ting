@@ -3,5 +3,23 @@
 @{ ViewData["Title"] = "ItemDetails"; }
 
 <div>
-    <span>@Model.SelectedItem?.Name</span>
+    <h3>@Model.SelectedItem?.Name</h3>
+    
+    <form method="post">
+        <input type="hidden" value="@Model.SelectedItem.ItemId" name="itemId" />
+        <label for="name">Sted</label>
+        <input list="locations" value="@Model.SelectedItem.Location" name="newLocation">
+        <datalist id="locations" >
+            @foreach (var location in @Model.PossibleLocations)
+            {
+                <option value="@location" />
+            }
+        </datalist>
+        <input type="submit" value="Lagre"/>
+    </form>
+
+    @if(!string.IsNullOrEmpty(Model.SelectedItem.ImageFilename)) 
+    {
+        <img src="/@Model.SelectedItem.ImageFilename" class="small-image"/>
+    }
 </div>

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PocketCqrs;
 using PocketCqrs.EventStore;
-using ting.Domain;
+using Ting.Domain;
 
 namespace Ting.Pages
 {

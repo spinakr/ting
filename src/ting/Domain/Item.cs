@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using PocketCqrs;
 
-namespace ting.Domain
+namespace Ting.Domain
 {
     public class Inventory : EventSourcedAggregate
     {

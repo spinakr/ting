@@ -1,15 +1,17 @@
-﻿@page
+﻿@page "/items"
 @model ItemList
 @{
     ViewData["Title"] = "Ting";
 }
 
 <div class="item-list">
-        @foreach (var ting in Model.Items)
+        @foreach (var item in Model.Items)
         {
-            <div class="item-listing">
-                <span>@ting.Name</span>
-                @* <img src="@ting.ImageFilename" class="small-image"/> *@
-            </div>
+            <a href="/items/@item.ItemId">
+                <div class="item-listing">
+                    <span>@item.Name</span>
+                    @* <img src="@ting.ImageFilename" class="small-image"/> *@
+                </div>
+            </a>
         }
 </div>
